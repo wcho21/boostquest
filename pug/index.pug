@@ -1,4 +1,16 @@
-extends base.pug
+extends layouts/base.pug
 
-block body
-  h1 Hello world
+block main
+  h1 Days
+
+  ul
+    li
+      a(href='/day/0') Day 0
+    li
+      a(href='/day/1') Day 1
+    li
+      a(href='/day/2') Day 2
+    li
+      a(href='/day/3') Day 3
+    li
+      a(href='/day/4') Day 4
