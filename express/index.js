@@ -29,7 +29,7 @@ app.get('/day/:num', (req, res) => {
 });
 
 app.get('/day/:num/input', async (req, res) => {
-  const buffer = await fs.readFile('./challenges/1/inputs/1.txt');
+  const buffer = await fs.readFile('./challenges/input/10/1.txt');
   const input = buffer.toString();
   res.type('text/plain');
   res.send(input);
