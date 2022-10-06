@@ -2,3 +2,14 @@ extends layouts/base.pug
 
 block main
   h1 Day #{num}
+
+  if num === '0'
+    include ../challenges/description/11.pug
+
+  p
+    - const inputFileUrl = `./${num}/input`;
+    a(href=inputFileUrl, target='_blank') 입력 파일
+
+  form(action='./answer', method='post')
+    input(type='text', placeholder='여기에 답을 입력하세요')
+    input(type='submit', value='제출')
