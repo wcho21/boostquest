@@ -2,3 +2,6 @@ extends layouts/base.pug
 
 block main
   h1 Sign-in
+  
+  p
+    a(href=`https://github.com/login/oauth/authorize?client_id=${clientId}`) Sign in with GitHub
