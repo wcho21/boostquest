@@ -1,0 +1,12 @@
+USE boostquest;
+
+CREATE TABLE IF NOT EXISTS users_v1 (
+  uid VARCHAR(64) NOT NULL PRIMARY KEY,
+  name VARCHAR(32) NOT NULL,
+  created_at TIMESTAMP NOT NULL,
+  input_case_1 SMALLINT NOT NULL,
+  input_case_2 SMALLINT NOT NULL,
+  input_case_3 SMALLINT NOT NULL,
+  input_case_4 SMALLINT NOT NULL,
+  input_case_5 SMALLINT NOT NULL
+) ENGINE=InnoDB;
