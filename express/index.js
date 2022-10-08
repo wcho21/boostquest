@@ -1,13 +1,11 @@
 const express = require('express');
 const fs = require('fs/promises');
-const dotenv = require('dotenv');
+const config = require('../config');
 const morgan = require('morgan');
 const axios = require('axios');
 const session = require('express-session');
 const MysqlStore = require('express-mysql-session')(session);
 const mysql = require('mysql2');
-
-dotenv.config();
 
 const app = express();
 
@@ -16,17 +14,11 @@ app.use(express.static('static'));
 app.set('views', './pug');
 app.set('view engine', 'pug');
 
-const pool = mysql.createPool({
-  host: process.env.MYSQL_HOST,
-  port: process.env.MYSQL_PORT,
-  user: process.env.MYSQL_USER,
-  password: process.env.MYSQL_PASSWORD,
-  database: process.env.MYSQL_DATABASE,
-}).promise();
+const pool = mysql.createPool(config.mysql).promise();
 const sessionStore = new MysqlStore({}, pool);
 
 app.use(session({
-  secret: process.env.SERVER_SESSION_SECRET,
+  secret: config.server.sessionSecret,
   resave: false,
   saveUninitialized: false,
   store: sessionStore,
@@ -57,7 +49,7 @@ app.get('/about', (req, res) => {
 });
 
 app.get('/signin', (req, res) => {
-  const clientId = process.env.OAUTH_GITHUB_CLIENT_ID;
+  const clientId = config.oauth.github.clientId;
   res.render('signin', { clientId });
 });
 
@@ -79,10 +71,10 @@ app.get('/oauth/github', async (req, res) => {
   const accessTokenResponse = await axios.post(
     'https://github.com/login/oauth/access_token',
     {
-      client_id: process.env.OAUTH_GITHUB_CLIENT_ID,
-      client_secret: process.env.OAUTH_GITHUB_CLIENT_SECRET,
+      client_id: config.oauth.github.clientId,
+      client_secret: config.oauth.github.clientSecret,
       code,
-      redirect_uri: process.env.OAUTH_GITHUB_REDIRECT_URI,
+      redirect_uri: config.oauth.github.redirectUri,
     },
     {
       headers: {
