@@ -1,6 +1,7 @@
 const express = require('express');
 const fs = require('fs/promises');
 const dotenv = require('dotenv');
+const morgan = require('morgan');
 const axios = require('axios');
 const session = require('express-session');
 
@@ -8,6 +9,7 @@ dotenv.config();
 
 const app = express();
 
+app.use(morgan('dev'));
 app.use(express.static('static'));
 app.set('views', './pug');
 app.set('view engine', 'pug');
