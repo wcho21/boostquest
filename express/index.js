@@ -94,4 +94,8 @@ app.get('/oauth/github', async (req, res) => {
   res.redirect('/');
 });
 
+app.use((req, res) => {
+  res.render('404');
+});
+
 module.exports = app;
