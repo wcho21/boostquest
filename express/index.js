@@ -18,11 +18,10 @@ app.use(session);
 app.use((req, res, next) => {
   if ('user' in req.session) {
     res.locals.signedIn = true;
-    console.log('session:', req.session.user);
+    res.locals.user = req.session.user;
   } else {
     res.locals.signedIn = false;
   }
-  console.log('signedIn', res.locals.signedIn);
   next();
 });
 
