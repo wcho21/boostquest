@@ -4,6 +4,8 @@ const dotenv = require('dotenv');
 const morgan = require('morgan');
 const axios = require('axios');
 const session = require('express-session');
+const MysqlStore = require('express-mysql-session')(session);
+const mysql = require('mysql2');
 
 dotenv.config();
 
@@ -14,18 +16,27 @@ app.use(express.static('static'));
 app.set('views', './pug');
 app.set('view engine', 'pug');
 
+const pool = mysql.createPool({
+  host: process.env.MYSQL_HOST,
+  port: process.env.MYSQL_PORT,
+  user: process.env.MYSQL_USER,
+  password: process.env.MYSQL_PASSWORD,
+  database: process.env.MYSQL_DATABASE,
+}).promise();
+const sessionStore = new MysqlStore({}, pool);
+
 app.use(session({
   secret: process.env.SERVER_SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
+  store: sessionStore,
 }));
 
 // auth middleware
-// assume not signed in
-// TODO: do auth
 app.use((req, res, next) => {
   if ('user' in req.session) {
     res.locals.signedIn = true;
+    console.log('session:', req.session.user);
   } else {
     res.locals.signedIn = false;
   }
