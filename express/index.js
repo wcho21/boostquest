@@ -3,9 +3,7 @@ const fs = require('fs/promises');
 const config = require('../config');
 const morgan = require('morgan');
 const axios = require('axios');
-const session = require('express-session');
-const MysqlStore = require('express-mysql-session')(session);
-const pool = require('../database/pool');
+const session = require('./../middlewares/session');
 
 const app = express();
 
@@ -14,14 +12,7 @@ app.use(express.static('static'));
 app.set('views', './pug');
 app.set('view engine', 'pug');
 
-const sessionStore = new MysqlStore({}, pool);
-
-app.use(session({
-  secret: config.server.sessionSecret,
-  resave: false,
-  saveUninitialized: false,
-  store: sessionStore,
-}));
+app.use(session);
 
 // auth middleware
 app.use((req, res, next) => {
