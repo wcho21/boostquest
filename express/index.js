@@ -5,7 +5,7 @@ const morgan = require('morgan');
 const axios = require('axios');
 const session = require('express-session');
 const MysqlStore = require('express-mysql-session')(session);
-const mysql = require('mysql2');
+const pool = require('../database/pool');
 
 const app = express();
 
@@ -14,7 +14,6 @@ app.use(express.static('static'));
 app.set('views', './pug');
 app.set('view engine', 'pug');
 
-const pool = mysql.createPool(config.mysql).promise();
 const sessionStore = new MysqlStore({}, pool);
 
 app.use(session({
