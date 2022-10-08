@@ -4,6 +4,9 @@ const config = require('../config');
 const morgan = require('morgan');
 const axios = require('axios');
 const session = require('./../middlewares/session');
+const { PageNotFoundError } = require('./errors.js');
+const validateChallengeNumber = require('../middlewares/validate-challenge-number');
+const validateAccessTime = require('../middlewares/validate-access-time');
 
 const app = express();
 
@@ -47,17 +50,23 @@ app.get('/signout', (req, res) => {
   res.redirect('/');
 });
 
-app.get('/day/:num', (req, res) => {
-  const num = req.params.num ? req.params.num : 0;
-  res.render('day', { num });
-});
+app.get('/day/:num',
+  validateChallengeNumber,
+  validateAccessTime,
+  (req, res) => {
+    const num = req.params.num ? req.params.num : 0;
+    res.render('day', { num });
+  });
 
-app.get('/day/:num/input', async (req, res) => {
-  const buffer = await fs.readFile('./challenges/input/10/1.txt');
-  const input = buffer.toString();
-  res.type('text/plain');
-  res.send(input);
-});
+app.get('/day/:num/input',
+  validateChallengeNumber,
+  validateAccessTime,
+  async (req, res) => {
+    const buffer = await fs.readFile('./challenges/input/10/1.txt');
+    const input = buffer.toString();
+    res.type('text/plain');
+    res.send(input);
+  });
 
 app.get('/oauth/github', async (req, res) => {
   const code = req.query.code;
@@ -92,6 +101,20 @@ app.get('/oauth/github', async (req, res) => {
   req.session.user = {name: userName, id: userId};
 
   res.redirect('/');
+});
+
+app.use((req, res) => {
+  throw new PageNotFoundError();
+});
+
+app.use((err, req, res, next) => {
+  if (err instanceof PageNotFoundError) {
+    res.render('404');
+    return;
+  }
+
+  console.error(err);
+  res.sendStatus(500);
 });
 
 module.exports = app;

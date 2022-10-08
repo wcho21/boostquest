@@ -22,5 +22,8 @@ module.exports = {
     user: e.MYSQL_USER,
     password: e.MYSQL_PASSWORD,
     database: e.MYSQL_DATABASE,
-  }
+  },
+  site: {
+    firstDayOpenTime: e.SITE_FIRST_DAY_OPEN_TIME,
+  },
 };
