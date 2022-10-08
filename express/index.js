@@ -4,6 +4,8 @@ const config = require('../config');
 const morgan = require('morgan');
 const axios = require('axios');
 const session = require('./../middlewares/session');
+const { PageNotFoundError } = require('./errors.js');
+const validateChallengeNumber = require('../middlewares/validate-challenge-number');
 
 const app = express();
 
@@ -47,12 +49,12 @@ app.get('/signout', (req, res) => {
   res.redirect('/');
 });
 
-app.get('/day/:num', (req, res) => {
+app.get('/day/:num', validateChallengeNumber, (req, res) => {
   const num = req.params.num ? req.params.num : 0;
   res.render('day', { num });
 });
 
-app.get('/day/:num/input', async (req, res) => {
+app.get('/day/:num/input', validateChallengeNumber, async (req, res) => {
   const buffer = await fs.readFile('./challenges/input/10/1.txt');
   const input = buffer.toString();
   res.type('text/plain');
@@ -95,7 +97,16 @@ app.get('/oauth/github', async (req, res) => {
 });
 
 app.use((req, res) => {
-  res.render('404');
+  throw new PageNotFoundError();
+});
+
+app.use((err, req, res, next) => {
+  if (err instanceof PageNotFoundError) {
+    res.render('404');
+    return;
+  }
+
+  res.sendStatus(500);
 });
 
 module.exports = app;
