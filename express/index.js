@@ -43,6 +43,11 @@ app.get('/signin', (req, res) => {
   res.render('signin', { clientId });
 });
 
+app.get('/signout', (req, res) => {
+  req.session.destroy();
+  res.redirect('/');
+});
+
 app.get('/day/:num', (req, res) => {
   const num = req.params.num ? req.params.num : 0;
   res.render('day', { num });

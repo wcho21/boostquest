@@ -7,5 +7,12 @@ header
       a(href='/leaderboard') Leaderboard
     li
       a(href='/about') About
-    li
-      a(href='/signin') Sign in with GitHub
+
+    if signedIn
+      li
+        p
+          a(href='./signout') Sign out
+          span #{user.name}
+    else
+      li
+        a(href='/signin') Sign in with GitHub
