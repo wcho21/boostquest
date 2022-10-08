@@ -44,7 +44,8 @@ app.get('/about', (req, res) => {
 });
 
 app.get('/signin', (req, res) => {
-  res.render('signin');
+  const clientId = process.env.OAUTH_GITHUB_CLIENT_ID;
+  res.render('signin', { clientId });
 });
 
 app.get('/day/:num', (req, res) => {
