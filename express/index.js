@@ -6,6 +6,7 @@ const axios = require('axios');
 const session = require('./../middlewares/session');
 const { PageNotFoundError } = require('./errors.js');
 const validateChallengeNumber = require('../middlewares/validate-challenge-number');
+const validateAccessTime = require('../middlewares/validate-access-time');
 
 const app = express();
 
@@ -49,17 +50,23 @@ app.get('/signout', (req, res) => {
   res.redirect('/');
 });
 
-app.get('/day/:num', validateChallengeNumber, (req, res) => {
-  const num = req.params.num ? req.params.num : 0;
-  res.render('day', { num });
-});
+app.get('/day/:num',
+  validateChallengeNumber,
+  validateAccessTime,
+  (req, res) => {
+    const num = req.params.num ? req.params.num : 0;
+    res.render('day', { num });
+  });
 
-app.get('/day/:num/input', validateChallengeNumber, async (req, res) => {
-  const buffer = await fs.readFile('./challenges/input/10/1.txt');
-  const input = buffer.toString();
-  res.type('text/plain');
-  res.send(input);
-});
+app.get('/day/:num/input',
+  validateChallengeNumber,
+  validateAccessTime,
+  async (req, res) => {
+    const buffer = await fs.readFile('./challenges/input/10/1.txt');
+    const input = buffer.toString();
+    res.type('text/plain');
+    res.send(input);
+  });
 
 app.get('/oauth/github', async (req, res) => {
   const code = req.query.code;
@@ -106,6 +113,7 @@ app.use((err, req, res, next) => {
     return;
   }
 
+  console.error(err);
   res.sendStatus(500);
 });
 
