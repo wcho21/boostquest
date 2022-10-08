@@ -1,11 +1,9 @@
 const express = require('express');
 const fs = require('fs/promises');
-const dotenv = require('dotenv');
+const config = require('../config');
 const morgan = require('morgan');
 const axios = require('axios');
-const session = require('express-session');
-
-dotenv.config();
+const session = require('./../middlewares/session');
 
 const app = express();
 
@@ -14,18 +12,13 @@ app.use(express.static('static'));
 app.set('views', './pug');
 app.set('view engine', 'pug');
 
-app.use(session({
-  secret: process.env.SERVER_SESSION_SECRET,
-  resave: false,
-  saveUninitialized: false,
-}));
+app.use(session);
 
 // auth middleware
-// assume not signed in
-// TODO: do auth
 app.use((req, res, next) => {
   if ('user' in req.session) {
     res.locals.signedIn = true;
+    console.log('session:', req.session.user);
   } else {
     res.locals.signedIn = false;
   }
@@ -46,8 +39,13 @@ app.get('/about', (req, res) => {
 });
 
 app.get('/signin', (req, res) => {
-  const clientId = process.env.OAUTH_GITHUB_CLIENT_ID;
+  const clientId = config.oauth.github.clientId;
   res.render('signin', { clientId });
+});
+
+app.get('/signout', (req, res) => {
+  req.session.destroy();
+  res.redirect('/');
 });
 
 app.get('/day/:num', (req, res) => {
@@ -68,10 +66,10 @@ app.get('/oauth/github', async (req, res) => {
   const accessTokenResponse = await axios.post(
     'https://github.com/login/oauth/access_token',
     {
-      client_id: process.env.OAUTH_GITHUB_CLIENT_ID,
-      client_secret: process.env.OAUTH_GITHUB_CLIENT_SECRET,
+      client_id: config.oauth.github.clientId,
+      client_secret: config.oauth.github.clientSecret,
       code,
-      redirect_uri: process.env.OAUTH_GITHUB_REDIRECT_URI,
+      redirect_uri: config.oauth.github.redirectUri,
     },
     {
       headers: {
