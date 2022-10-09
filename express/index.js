@@ -7,6 +7,8 @@ const session = require('./../middlewares/session');
 const { PageNotFoundError } = require('./errors.js');
 const validateChallengeNumber = require('../middlewares/validate-challenge-number');
 const validateAccessTime = require('../middlewares/validate-access-time');
+const crypto = require('crypto');
+const pool = require('../database/pool');
 
 const app = express();
 
@@ -95,8 +97,17 @@ app.get('/oauth/github', async (req, res) => {
     }
   );
 
-  const userName = githubUserResponse.data.login;
   const userId = githubUserResponse.data.id;
+  const userName = githubUserResponse.data.login;
+
+  const [rows] = await pool.query('SELECT EXISTS (SELECT * FROM users_v1 WHERE uid = ?) AS `exists`', userId);
+  const userExists = rows[0].exists === 1 ? true : false;
+  if (!userExists) {
+    const inputCases = Array(5).fill(null).map(el => crypto.randomInt(1, 100));
+
+    await pool.query('INSERT INTO users_v1 (uid, name, created_at, input_case_1, input_case_2, input_case_3, input_case_4, input_case_5)' +
+        ' VALUES (?, ?, NOW(), ?, ?, ?, ?, ?)', [userId, userName, ...inputCases]);
+  }
 
   req.session.user = {name: userName, id: userId};
 
