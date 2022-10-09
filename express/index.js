@@ -52,6 +52,42 @@ app.get('/signout', (req, res) => {
   res.redirect('/');
 });
 
+app.use(express.urlencoded({ extended: true }));
+
+app.post('/answer/:day', async (req, res) => {
+  if (!res.locals.signedIn) {
+    throw new PageNotFoundError();
+  }
+
+  if (!('answer' in req.body)) {
+    throw new PageNotFoundError();
+  }
+
+  const userAnswer = req.body.answer;
+
+  const day = req.params.day;
+
+  const inputCasesIdx = parseInt(day) - 1;
+  const inputCase = req.session.user.inputCases[inputCasesIdx];
+
+  let firstProblemSolved = false;
+  const userId = res.locals.user.id;
+
+  const firstProblemId = day + '1';
+  const [rows] = await pool.query('SELECT * FROM problems_v1 WHERE pid = ? AND uid = ?', [firstProblemId, userId]);
+  if (rows.length === 0 || rows[0].solved === 0) {
+    const buffer = await fs.readFile('./challenges/answers/' + firstProblemId + '/' + inputCase + '.txt');
+    const exactAnswer = buffer.toString();
+
+    res.locals.correctAnswer = userAnswer === exactAnswer;
+
+    res.render('submit');
+    return;
+  }
+
+  res.send('hi');
+});
+
 app.get('/day/:num',
   validateChallengeNumber,
   validateAccessTime,

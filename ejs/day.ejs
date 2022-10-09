@@ -16,8 +16,9 @@
   <p>문제를 이미 푸셨지만 입력 파일은 볼 수 있습니다.</p>
 <% } else if (signedIn) { %>
   <p><a href='/day/<%= num %>/input'>입력 파일</a></p>
-  <form>
-    <input type='text' placeholder='여기에 답을 입력하세요'></input>
+  <form action='/answer/<%= num %>' method='post'>
+    <input type='text' name='answer' placeholder='여기에 답을 입력하세요'></input>
+    <input type='submit' value='제출'></input>
   </form>
 <% } else { %>
   <p>로그인을 하고 오세요</p>
