@@ -14,8 +14,8 @@ const app = express();
 
 app.use(morgan('dev'));
 app.use(express.static('static'));
-app.set('views', './pug');
-app.set('view engine', 'pug');
+app.set('views', './ejs');
+app.set('view engine', 'ejs');
 
 app.use(session);
 
@@ -52,19 +52,86 @@ app.get('/signout', (req, res) => {
   res.redirect('/');
 });
 
+app.use(express.urlencoded({ extended: true }));
+
+app.post('/answer/:day', async (req, res) => {
+  if (!res.locals.signedIn) {
+    throw new PageNotFoundError();
+  }
+
+  if (!('answer' in req.body)) {
+    throw new PageNotFoundError();
+  }
+
+  const userAnswer = req.body.answer;
+
+  const day = req.params.day;
+
+  const inputCasesIdx = parseInt(day) - 1;
+  const inputCase = req.session.user.inputCases[inputCasesIdx];
+
+  let firstProblemSolved = false;
+  const userId = res.locals.user.id;
+
+  const firstProblemId = day + '1';
+  const [rows] = await pool.query('SELECT * FROM problems_v1 WHERE pid = ? AND uid = ?', [firstProblemId, userId]);
+  if (rows.length === 0 || rows[0].solved === 0) {
+    const buffer = await fs.readFile('./challenges/answers/' + firstProblemId + '/' + inputCase + '.txt');
+    const exactAnswer = buffer.toString();
+
+    res.locals.correctAnswer = userAnswer === exactAnswer;
+
+    res.render('submit');
+    return;
+  }
+
+  res.send('hi');
+});
+
 app.get('/day/:num',
   validateChallengeNumber,
   validateAccessTime,
-  (req, res) => {
-    const num = req.params.num ? req.params.num : 0;
+  async (req, res) => {
+    const num = req.params.num;
+
+    let firstProblemSolved = false;
+    let secondProblemSolved = false;
+    if (res.locals.signedIn) {
+      const firstProblemId = num + '1';
+      const userId = res.locals.user.id;
+      const [rows] = await pool.query('SELECT * FROM problems_v1 WHERE pid = ? AND uid = ?', [firstProblemId, userId]);
+      if (rows.length === 1 && rows[0].solved === 1) {
+        firstProblemSolved = true;
+      }
+    }
+    if (firstProblemSolved && res.locals.signedIn) {
+      const secondProblemId = num + '2';
+      const userId = res.locals.user.id;
+      const [rows] = await pool.query('SELECT * FROM problems_v1 WHERE pid = ? AND uid = ?', [secondProblemId, userId]);
+      if (rows.length === 1 && rows[0].solved === 1) {
+        secondProblemSolved = true;
+      }
+    }
+
+    res.locals.firstProblemSolved = firstProblemSolved;
+    res.locals.secondProblemSolved = secondProblemSolved;
+
     res.render('day', { num });
   });
 
 app.get('/day/:num/input',
   validateChallengeNumber,
   validateAccessTime,
-  async (req, res) => {
-    const buffer = await fs.readFile('./challenges/input/10/1.txt');
+  async (req, res, next) => {
+    if (!res.locals.signedIn) {
+      throw new PageNotFoundError();
+    }
+
+    const num = req.params.num;
+    const problemSetNumber = num + '0';
+    const inputCasesIdx = parseInt(num) - 1;
+    const inputCase = req.session.user.inputCases[inputCasesIdx];
+    const buffer = await fs.readFile('./challenges/inputs/' + problemSetNumber + '/' + inputCase + '.txt');
     const input = buffer.toString();
     res.type('text/plain');
     res.send(input);
@@ -102,14 +169,19 @@ app.get('/oauth/github', async (req, res) => {
 
   const [rows] = await pool.query('SELECT EXISTS (SELECT * FROM users_v1 WHERE uid = ?) AS `exists`', userId);
   const userExists = rows[0].exists === 1 ? true : false;
+  let inputCases;
   if (!userExists) {
-    const inputCases = Array(5).fill(null).map(el => crypto.randomInt(1, 100));
+    inputCases = Array(5).fill(null).map(el => crypto.randomInt(1, 100));
 
     await pool.query('INSERT INTO users_v1 (uid, name, created_at, input_case_1, input_case_2, input_case_3, input_case_4, input_case_5)' +
         ' VALUES (?, ?, NOW(), ?, ?, ?, ?, ?)', [userId, userName, ...inputCases]);
+  } else {
+    const [rows] = await pool.query('SELECT input_case_1, input_case_2, input_case_3, input_case_4, input_case_5 FROM users_v1 WHERE uid = ?', [userId]);
+    const row = rows[0];
+    inputCases = [row.input_case_1, row.input_case_2, row.input_case_3, row.input_case_4, row.input_case_5];
   }
 
-  req.session.user = {name: userName, id: userId};
+  req.session.user = {name: userName, id: userId, inputCases};
 
   res.redirect('/');
 });
