@@ -86,8 +86,16 @@ app.get('/day/:num',
 app.get('/day/:num/input',
   validateChallengeNumber,
   validateAccessTime,
-  async (req, res) => {
-    const buffer = await fs.readFile('./challenges/input/10/1.txt');
+  async (req, res, next) => {
+    if (!res.locals.signedIn) {
+      throw new PageNotFoundError();
+    }
+
+    const num = req.params.num;
+    const problemSetNumber = num + '0';
+    const inputCasesIdx = parseInt(num) - 1;
+    const inputCase = req.session.user.inputCases[inputCasesIdx];
+    const buffer = await fs.readFile('./challenges/inputs/' + problemSetNumber + '/' + inputCase + '.txt');
     const input = buffer.toString();
     res.type('text/plain');
     res.send(input);
@@ -125,14 +133,19 @@ app.get('/oauth/github', async (req, res) => {
 
   const [rows] = await pool.query('SELECT EXISTS (SELECT * FROM users_v1 WHERE uid = ?) AS `exists`', userId);
   const userExists = rows[0].exists === 1 ? true : false;
+  let inputCases;
   if (!userExists) {
-    const inputCases = Array(5).fill(null).map(el => crypto.randomInt(1, 100));
+    inputCases = Array(5).fill(null).map(el => crypto.randomInt(1, 100));
 
     await pool.query('INSERT INTO users_v1 (uid, name, created_at, input_case_1, input_case_2, input_case_3, input_case_4, input_case_5)' +
         ' VALUES (?, ?, NOW(), ?, ?, ?, ?, ?)', [userId, userName, ...inputCases]);
+  } else {
+    const [rows] = await pool.query('SELECT input_case_1, input_case_2, input_case_3, input_case_4, input_case_5 FROM users_v1 WHERE uid = ?', [userId]);
+    const row = rows[0];
+    inputCases = [row.input_case_1, row.input_case_2, row.input_case_3, row.input_case_4, row.input_case_5];
   }
 
-  req.session.user = {name: userName, id: userId};
+  req.session.user = {name: userName, id: userId, inputCases};
 
   res.redirect('/');
 });
