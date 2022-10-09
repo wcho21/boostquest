@@ -55,8 +55,31 @@ app.get('/signout', (req, res) => {
 app.get('/day/:num',
   validateChallengeNumber,
   validateAccessTime,
-  (req, res) => {
-    const num = req.params.num ? req.params.num : 0;
+  async (req, res) => {
+    const num = req.params.num;
+
+    let firstProblemSolved = false;
+    let secondProblemSolved = false;
+    if (res.locals.signedIn) {
+      const firstProblemId = num + '1';
+      const userId = res.locals.user.id;
+      const [rows] = await pool.query('SELECT * FROM problems_v1 WHERE pid = ? AND uid = ?', [firstProblemId, userId]);
+      if (rows.length === 1 && rows[0].solved === 1) {
+        firstProblemSolved = true;
+      }
+    }
+    if (firstProblemSolved && res.locals.signedIn) {
+      const secondProblemId = num + '2';
+      const userId = res.locals.user.id;
+      const [rows] = await pool.query('SELECT * FROM problems_v1 WHERE pid = ? AND uid = ?', [secondProblemId, userId]);
+      if (rows.length === 1 && rows[0].solved === 1) {
+        secondProblemSolved = true;
+      }
+    }
+
+    res.locals.firstProblemSolved = firstProblemSolved;
+    res.locals.secondProblemSolved = secondProblemSolved;
+
     res.render('day', { num });
   });
 
