@@ -14,8 +14,8 @@ const app = express();
 
 app.use(morgan('dev'));
 app.use(express.static('static'));
-app.set('views', './pug');
-app.set('view engine', 'pug');
+app.set('views', './ejs');
+app.set('view engine', 'ejs');
 
 app.use(session);
 
