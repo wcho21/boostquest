@@ -9,6 +9,8 @@ const validateChallengeNumber = require('../middlewares/validate-challenge-numbe
 const validateAccessTime = require('../middlewares/validate-access-time');
 const crypto = require('crypto');
 const pool = require('../database/pool');
+const dayjs = require('dayjs');
+const { getProblemStatus, updateProblemAsSolved, updateProblemLastTriedAt } = require('../database/problems');
 
 const app = express();
 
@@ -54,6 +56,25 @@ app.get('/signout', (req, res) => {
 
 app.use(express.urlencoded({ extended: true }));
 
+const isBlocked = (lastTriedAtStr) => {
+  const currentTime = dayjs();
+
+  const lastTriedAt = dayjs(lastTriedAtStr);
+  const blockedUntil = lastTriedAt.add(1, 'second');
+
+  const blocked = currentTime.isBefore(blockedUntil);
+  return blocked;
+}
+
+const isCorrectAnswer = async (problemId, inputCaseId, userAnswer) => {
+  const answerFilePath = `./challenges/answers/${problemId}/${inputCaseId}.txt`;
+  const buffer = await fs.readFile(answerFilePath);
+  const exactAnswer = buffer.toString();
+
+  const correct = userAnswer === exactAnswer;
+  return correct;
+}
+
 app.post('/answer/:day', async (req, res) => {
   if (!res.locals.signedIn) {
     throw new PageNotFoundError();
@@ -63,29 +84,65 @@ app.post('/answer/:day', async (req, res) => {
     throw new PageNotFoundError();
   }
 
-  const userAnswer = req.body.answer;
+  const userId = res.locals.user.id;
 
   const day = req.params.day;
+
+  const firstProblemId = day + '1';
+  const firstProblem = await getProblemStatus(firstProblemId, userId);
+
+  if (firstProblem.tried && isBlocked(firstProblem.lastTriedAt)) {
+    res.locals.blocked = true;
+    res.render('submit');
+    return;
+  }
+
+  const userAnswer = req.body.answer;
 
   const inputCasesIdx = parseInt(day) - 1;
   const inputCase = req.session.user.inputCases[inputCasesIdx];
 
-  let firstProblemSolved = false;
-  const userId = res.locals.user.id;
+  if (!firstProblem.solved) {
+    const correctAnswer = await isCorrectAnswer(firstProblemId, inputCase, userAnswer);
+    res.locals.correctAnswer = correctAnswer;
+    res.locals.blocked = false;
 
-  const firstProblemId = day + '1';
-  const [rows] = await pool.query('SELECT * FROM problems_v1 WHERE pid = ? AND uid = ?', [firstProblemId, userId]);
-  if (rows.length === 0 || rows[0].solved === 0) {
-    const buffer = await fs.readFile('./challenges/answers/' + firstProblemId + '/' + inputCase + '.txt');
-    const exactAnswer = buffer.toString();
-
-    res.locals.correctAnswer = userAnswer === exactAnswer;
+    if (correctAnswer) {
+      await updateProblemAsSolved(firstProblemId, userId);
+    } else {
+      await updateProblemLastTriedAt(firstProblemId, userId);
+    }
 
     res.render('submit');
     return;
   }
 
-  res.send('hi');
+  const secondProblemId = day + '2';
+  const secondProblem = await getProblemStatus(secondProblemId, userId);
+
+  if (secondProblem.tried && isBlocked(secondProblem.lastTriedAt)) {
+    res.locals.blocked = true;
+    res.render('submit');
+    return;
+  }
+
+  if (!secondProblem.solved) {
+    const correctAnswer = await isCorrectAnswer(secondProblemId, inputCase, userAnswer);
+    res.locals.correctAnswer = correctAnswer;
+    res.locals.blocked = false;
+
+    if (correctAnswer) {
+      await updateProblemAsSolved(secondProblemId, userId);
+    } else {
+      await updateProblemLastTriedAt(secondProblemId, userId);
+    }
+
+    res.render('submit');
+    return;
+  }
+
+  // all problems have been already solved
+  throw new PageNotFoundError();
 });
 
 app.get('/day/:num',
