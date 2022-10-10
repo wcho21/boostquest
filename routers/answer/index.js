@@ -1,5 +1,5 @@
 const fs = require('fs/promises');
-const { PageNotFoundError } = require('#express/errors.js');
+const { PageNotFoundError } = require('#middlewares/page-not-found-error-creator');
 const { getProblemStatus, updateProblemAsSolved, updateProblemLastTriedAt } = require('#database/problems');
 const dayjs = require('dayjs');
 const express = require('express');

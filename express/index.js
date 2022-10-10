@@ -1,8 +1,9 @@
 const express = require('express');
 const morgan = require('morgan');
 const session = require('#middlewares/session');
-const { PageNotFoundError } = require('./errors.js');
 const initAuthData = require('#middlewares/init-auth-data');
+const { pageNotFoundErrorCreator } = require('#middlewares/page-not-found-error-creator');
+const expressErrorHandler = require('#middlewares/express-error-handler');
 const routers = require('#routers');
 
 const app = express();
@@ -26,18 +27,7 @@ app.use('/answer', routers.answerRouter);
 app.use('/day', routers.dayRouter);
 app.use('/oauth', routers.oauthRouter);
 
-app.use((req, res) => {
-  throw new PageNotFoundError();
-});
-
-app.use((err, req, res, next) => {
-  if (err instanceof PageNotFoundError) {
-    res.render('404');
-    return;
-  }
-
-  console.error(err);
-  res.sendStatus(500);
-});
+app.use(pageNotFoundErrorCreator);
+app.use(expressErrorHandler);
 
 module.exports = app;

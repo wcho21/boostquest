@@ -5,3 +5,8 @@ class PageNotFoundError extends Error {
   }
 }
 exports.PageNotFoundError = PageNotFoundError;
+
+exports.pageNotFoundErrorCreator = (req, res) => {
+  throw new PageNotFoundError();
+};
+
