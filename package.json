@@ -1,7 +1,7 @@
 {
   "name": "boostquest",
-  "version": "0.0.1",
-  "description": "simple four-day challenge",
+  "version": "0.1.0",
+  "description": "simple five-day challenge",
   "main": "index.js",
   "scripts": {
     "start": "nodemon",
