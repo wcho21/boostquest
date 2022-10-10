@@ -38,61 +38,44 @@ router.post('/:num',
       throw new PageNotFoundError();
     }
 
-    const userId = res.locals.user.id;
-
     const day = req.params.num;
-
-    const firstProblemId = day + '1';
-    const firstProblem = await getProblemStatus(firstProblemId, userId);
-
-    if (firstProblem.tried && isBlocked(firstProblem.lastTriedAt)) {
-      res.locals.blocked = true;
-      res.render('submit');
-      return;
-    }
-
-    const userAnswer = req.body.answer;
-
     const inputCasesIdx = parseInt(day) - 1;
     const inputCase = req.session.user.inputCases[inputCasesIdx];
+    const userAnswer = req.body.answer;
+    const userId = res.locals.user.id;
 
-    if (!firstProblem.solved) {
-      const correctAnswer = await isCorrectAnswer(firstProblemId, inputCase, userAnswer);
-      res.locals.correctAnswer = correctAnswer;
-      res.locals.blocked = false;
+    const firstProblemId = day.toString() + '1';
+    const secondProblemId = day.toString() + '2';
 
-      if (correctAnswer) {
-        await updateProblemAsSolved(firstProblemId, userId);
-      } else {
-        await updateProblemLastTriedAt(firstProblemId, userId);
+    for (const problemId of [firstProblemId, secondProblemId]) {
+      const status = await getProblemStatus(problemId, userId);
+
+      if (status.solved) {
+        continue;
       }
 
-      res.render('submit');
-      return;
-    }
-
-    const secondProblemId = day + '2';
-    const secondProblem = await getProblemStatus(secondProblemId, userId);
-
-    if (secondProblem.tried && isBlocked(secondProblem.lastTriedAt)) {
-      res.locals.blocked = true;
-      res.render('submit');
-      return;
-    }
-
-    if (!secondProblem.solved) {
-      const correctAnswer = await isCorrectAnswer(secondProblemId, inputCase, userAnswer);
-      res.locals.correctAnswer = correctAnswer;
-      res.locals.blocked = false;
-
-      if (correctAnswer) {
-        await updateProblemAsSolved(secondProblemId, userId);
-      } else {
-        await updateProblemLastTriedAt(secondProblemId, userId);
+      if (status.tried && isBlocked(status.lastTriedAt)) {
+        res.locals.blocked = true;
+        res.render('submit');
+        return;
       }
 
-      res.render('submit');
-      return;
+      const correctAnswer = await isCorrectAnswer(problemId, inputCase, userAnswer);
+      if (correctAnswer) {
+        await updateProblemAsSolved(problemId, userId);
+
+        res.locals.blocked = false;
+        res.locals.correctAnswer = true;
+        res.render('submit');
+        return;
+      } else {
+        await updateProblemLastTriedAt(problemId, userId);
+
+        res.locals.blocked = false;
+        res.locals.correctAnswer = false;
+        res.render('submit');
+        return;
+      }
     }
 
     // all problems have been already solved
