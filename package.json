@@ -30,5 +30,12 @@
   },
   "devDependencies": {
     "nodemon": "^2.0.20"
+  },
+  "imports": {
+    "#middlewares/*": "./middlewares/*/index.js",
+    "#config": "./config/index.js",
+    "#database/*": "./database/*/index.js",
+    "#express/*": "./express/*",
+    "#routers": "./routers/index.js"
   }
 }
