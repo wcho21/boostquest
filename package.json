@@ -35,6 +35,7 @@
     "#middlewares/*": "./middlewares/*/index.js",
     "#config": "./config/index.js",
     "#database/*": "./database/*/index.js",
-    "#express/*": "./express/*"
+    "#express/*": "./express/*",
+    "#routers": "./routers/index.js"
   }
 }
