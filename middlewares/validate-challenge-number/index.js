@@ -1,4 +1,4 @@
-const { PageNotFoundError } = require('../../express/errors.js');
+const { PageNotFoundError } = require('#express/errors.js');
 
 const validateChallengeNumber = (req, res, next) => {
   const num = req.params.num;

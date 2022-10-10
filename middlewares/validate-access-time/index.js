@@ -1,7 +1,7 @@
 // note: this middleware must come after valitdate-challenge-number middleware
 
-const config = require('../../config');
-const { PageNotFoundError } = require('../../express/errors.js');
+const config = require('#config');
+const { PageNotFoundError } = require('#express/errors.js');
 const dayjs = require('dayjs');
 
 const validateAccessTime = (req, res, next) => {

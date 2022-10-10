@@ -1,17 +1,17 @@
 const express = require('express');
 const fs = require('fs/promises');
-const config = require('../config');
+const config = require('#config');
 const morgan = require('morgan');
 const axios = require('axios');
-const session = require('./../middlewares/session');
+const session = require('#middlewares/session');
 const { PageNotFoundError } = require('./errors.js');
-const validateChallengeNumber = require('../middlewares/validate-challenge-number');
-const validateAccessTime = require('../middlewares/validate-access-time');
+const validateChallengeNumber = require('#middlewares/validate-challenge-number');
+const validateAccessTime = require('#middlewares/validate-access-time');
 const crypto = require('crypto');
-const pool = require('../database/pool');
+const pool = require('#database/pool');
 const dayjs = require('dayjs');
-const { getProblemStatus, updateProblemAsSolved, updateProblemLastTriedAt } = require('../database/problems');
-const initAuthData = require('../middlewares/init-auth-data');
+const { getProblemStatus, updateProblemAsSolved, updateProblemLastTriedAt } = require('#database/problems');
+const initAuthData = require('#middlewares/init-auth-data');
 
 const app = express();
 
@@ -51,7 +51,7 @@ const isBlocked = (lastTriedAtStr) => {
   const currentTime = dayjs();
 
   const lastTriedAt = dayjs(lastTriedAtStr);
-  const blockedUntil = lastTriedAt.add(1, 'second');
+  const blockedUntil = lastTriedAt.add(1, 'minute');
 
   const blocked = currentTime.isBefore(blockedUntil);
   return blocked;

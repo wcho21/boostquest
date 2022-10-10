@@ -1,4 +1,4 @@
-const pool = require('../pool');
+const pool = require('#database/pool');
 
 const table = 'problems_v1';
 
