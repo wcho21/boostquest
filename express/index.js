@@ -11,6 +11,7 @@ const crypto = require('crypto');
 const pool = require('../database/pool');
 const dayjs = require('dayjs');
 const { getProblemStatus, updateProblemAsSolved, updateProblemLastTriedAt } = require('../database/problems');
+const initAuthData = require('../middlewares/init-auth-data');
 
 const app = express();
 
@@ -20,17 +21,7 @@ app.set('views', './ejs');
 app.set('view engine', 'ejs');
 
 app.use(session);
-
-// auth middleware
-app.use((req, res, next) => {
-  if ('user' in req.session) {
-    res.locals.signedIn = true;
-    res.locals.user = req.session.user;
-  } else {
-    res.locals.signedIn = false;
-  }
-  next();
-});
+app.use(initAuthData);
 
 app.get('/', (req, res) => {
   res.render('index');
