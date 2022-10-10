@@ -22,6 +22,8 @@ module.exports = {
     user: e.MYSQL_USER,
     password: e.MYSQL_PASSWORD,
     database: e.MYSQL_DATABASE,
+    usersTable: e.MYSQL_USERS_TABLE,
+    problemsTable: e.MYSQL_PROBLEMS_TABLE,
   },
   site: {
     firstDayOpenTime: e.SITE_FIRST_DAY_OPEN_TIME,
