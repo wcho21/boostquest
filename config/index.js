@@ -6,8 +6,15 @@ const e = process.env;
 
 module.exports = {
   server: {
+    hostname: e.SERVER_HOSTNAME,
     httpPort: e.SERVER_HTTP_PORT,
+    httpsPort: e.SERVER_HTTPS_PORT,
     sessionSecret: e.SERVER_SESSION_SECRET,
+  },
+  ssl: {
+    keyPath: e.SSL_KEY_PATH,
+    certPath: e.SSL_CERT_PATH,
+    caPath: e.SSL_CA_PATH
   },
   oauth: {
     github: {
