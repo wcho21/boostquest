@@ -11,24 +11,31 @@
 
       <div id="layout-root-page-left">
         <img alt="campfire image" id="campfire-image" src="/images/campfire.gif">
+        <%
+          if (problemsSolved[3]) {
+            %>
+            <img alt="campfire cat" id="campfire-cat-image" src="/images/boostcat.png">
+            <%
+          }
+        %>
       </div>
 
       <div id="layout-root-page-right">
         <ul id="layout-root-page-days">
-          <li class="day-item">
-            <h1 class="open-day"><a href='/day/1'>Day 1</a></h1>
-            <p class="status"><span class="clear">clear</span></p>
-          </li>
-          <li class="day-item">
-            <h1 class="open-day"><a href='/day/2'>Day 2</a></h1>
-            <p class="status"><span class="remaining-time">23:59:59</span></p>
-          </li>
-          <li class="day-item">
-            <h1 class="closed-day">Day 3</h1>
-          </li>
-          <li class="day-item">
-            <h1 class="closed-day">Day 4</h1>
-          </li>
+          <%
+            const numOfDays = 4;
+            for (let i = 0; i < numOfDays; ++i) {
+              const day = i+1;
+              %>
+              <li class="day-item">
+                <h1 class="open-day"><a href='/day/<%= day %>'>Day <%= day %></a></h1>
+                <% if (problemsSolved[i]) { %>
+                  <p class="status"><span class="clear">clear</span></p>
+                <% } %>
+              </li>
+              <%
+            }
+          %>
         </ul>
       </div>
     </main>
