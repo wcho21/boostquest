@@ -1,22 +1,36 @@
-<%- include('includes/prebody'); %>
-<%- include('includes/header'); %>
-<h1>Days</h1>
+<!DOCTYPE html>
+<html>
+  <head>
+    <%- include('includes/head', { pageStylesheet: 'root' }); %>
+  </head>
+  <body>
+    <%- include('includes/header'); %>
+    
+    <main id="layout-root-page">
+      <h1 id="layout-root-page-heading">Days</h1>
 
-<ul>
-  <li>
-    <a href='/day/1'>Day 1</a>
-  </li>
-  <li>
-    <a href='/day/2'>Day 2</a>
-  </li>
-  <li>
-    <a href='/day/3'>Day 3</a>
-  </li>
-  <li>
-    <a href='/day/4'>Day 4</a>
-  </li>
-  <li>
-    <a href='/day/5'>Day 5</a>
-  </li>
-</ul>
-<%- include('includes/postbody'); %>
+      <div id="layout-root-page-left">
+        <img alt="campfire image" id="campfire-image" src="/images/campfire.gif">
+      </div>
+
+      <div id="layout-root-page-right">
+        <ul id="layout-root-page-days">
+          <li class="day-item">
+            <h1 class="open-day"><a href='/day/1'>Day 1</a></h1>
+            <p class="status"><span class="clear">clear</span></p>
+          </li>
+          <li class="day-item">
+            <h1 class="open-day"><a href='/day/2'>Day 2</a></h1>
+            <p class="status"><span class="remaining-time">23:59:59</span></p>
+          </li>
+          <li class="day-item">
+            <h1 class="closed-day">Day 3</h1>
+          </li>
+          <li class="day-item">
+            <h1 class="closed-day">Day 4</h1>
+          </li>
+        </ul>
+      </div>
+    </main>
+  </body>
+</html>

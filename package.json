@@ -5,6 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon",
+    "build": "sass sass/:static/style/",
+    "build:dev": "sass sass/:static/style/ --watch",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "W. Cho",
@@ -29,7 +31,8 @@
     "mysql2": "^2.3.3"
   },
   "devDependencies": {
-    "nodemon": "^2.0.20"
+    "nodemon": "^2.0.20",
+    "sass": "^1.55.0"
   },
   "imports": {
     "#middlewares/*": "./middlewares/*/index.js",

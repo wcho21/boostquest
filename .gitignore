@@ -1,5 +1,6 @@
 node_modules/
 challenges/
 pug/includes/challenges
+static/style/
 
 .env
