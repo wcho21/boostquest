@@ -21,12 +21,13 @@ router.get('/github', async (req, res) => {
       },
     }
   );
+  const accessToken = accessTokenResponse.data.access_token;
   
   const githubUserResponse = await axios.get(
     'https://api.github.com/user',
     {
       headers: {
-        Authorization: `token ${accessTokenResponse.data.access_token}`,
+        Authorization: `token ${accessToken}`,
       },
     }
   );
