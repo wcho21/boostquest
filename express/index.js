@@ -1,5 +1,6 @@
 const express = require('express');
 const morgan = require('morgan');
+const httpsRedirector = require('#middlewares/https-redirector');
 const session = require('#middlewares/session');
 const initAuthData = require('#middlewares/init-auth-data');
 const { pageNotFoundErrorCreator } = require('#middlewares/page-not-found-error-creator');
@@ -9,6 +10,7 @@ const routers = require('#routers');
 const app = express();
 
 app.use(morgan('dev'));
+app.use(httpsRedirector);
 app.use(express.static('static'));
 app.use(express.urlencoded({ extended: true }));
 
