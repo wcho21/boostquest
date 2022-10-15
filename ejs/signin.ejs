@@ -1,7 +1,16 @@
-<%- include('includes/prebody'); %>
-<%- include('includes/header'); %>
-<h1>Sign-in</h1>
-<p>
-  <a href='https://github.com/login/oauth/authorize?client_id=<%= clientId %>'>Sign in with GitHub</a>
-</p>
-<%- include('includes/postbody'); %>
+<!DOCTYPE html>
+<html>
+  <head>
+    <%- include('includes/head', { pageStylesheet: 'day' }); %>
+  </head>
+  <body>
+    <%- include('includes/header'); %>
+
+    <main>
+      <h1>Sign-in</h1>
+      <p>
+        <a href='https://github.com/login/oauth/authorize?client_id=<%= clientId %>'>Sign in with GitHub</a>
+      </p>
+    </main>
+  </body>
+</html>

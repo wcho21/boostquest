@@ -1,0 +1,68 @@
+#layout-root-page {
+  position: relative;
+
+  height: 800px;
+
+  overflow: hidden;
+}
+
+#layout-root-page h1 {
+  display: none;
+}
+
+#layout-root-page ul {
+  position: absolute;
+  top: 60px;
+  right: 0;
+
+  width: 400px;
+
+  z-index: 15;
+}
+
+#layout-root-page ul li {
+  margin: 24px 0;
+  padding: 24px;
+
+  font-family: 'Silkscreen', cursive;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+#layout-root-page ul li a {
+  padding: 12px;
+}
+
+#layout-root-page #image-woods {
+  bottom: -20px;
+  position: absolute;
+  z-index: 12;
+}
+
+#layout-root-page #image-mountains {
+  bottom: 30px;
+  position: absolute;
+  z-index: 11;
+}
+
+#layout-day-page {
+  padding: 120px 10vw;
+}
+
+#layout-day-page h1 {
+  font-size: 36px;
+  font-family: 'Silkscreen', cursive;
+  font-weight: 700;
+}
+
+#layout-day-page h2 {
+  margin-bottom: 36px;
+
+  font-size: 24px;
+  font-family: 'Nanum Gothic Coding', monospace;
+  font-weight: 400;
+}
+
+#layout-day-page p {
+  margin-top: 24px;
+}

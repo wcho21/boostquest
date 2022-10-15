@@ -1,6 +1,7 @@
 const pool = require('#database/pool');
+const config = require('#config');
 
-const table = 'problems_v1';
+const table = config.mysql.problemsTable;
 
 const getProblemRow = async (problemId, userId) => {
   const sql = `SELECT * FROM \`${table}\` WHERE pid = ? AND uid = ?`;

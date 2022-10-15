@@ -1,30 +1,25 @@
-<header>
-  <h1>
-    <a href='/'>Boostquest</a>
-  </h1>
+<header id="layout-header">
+  <div id="layout-header-heading">
+    <h1>
+      <a href='/'>Boostquest</a>
+    </h1>
+  </div>
 
-  <ul>
+  <nav id="layout-header-menu">
     <li>
       <a href='/leaderboard'>Leaderboard</a>
     </li>
     <li>
       <a href='/about'>About</a>
     </li>
-    <% if (signedIn) { %>
-      <li>
-        <p>
+    <li>
+      <p>
+        <% if (signedIn) { %>
           <a href='/signout'>Sign out</a>
-        </p>
-        <p>
-          <%= user.name %>
-        </p>
-      </li>
-    <% } else { %>
-      <li>
-        <p>
-          <a href='/signin'>Sign in</a>
-        </p>
-      </li>
-    <% } %>
-  </ul>
+        <% } else { %>
+          <a href='/signin'>Sign In</a>
+        <% } %>
+      </p>
+    </li>
+  </nav>
 </header>

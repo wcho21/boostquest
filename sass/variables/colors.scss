@@ -1,0 +1,13 @@
+$theme-color-lighten-factor: 15%;
+
+$cyan: #59ccff;
+$purple: #b208de;
+$red: #eb5b47;
+$green: #08de56;
+$cyan-bright: lighten($cyan, $theme-color-lighten-factor);
+$purple-bright: lighten($purple, $theme-color-lighten-factor);
+$red-bright: lighten($red, $theme-color-lighten-factor);
+$green-bright: lighten($green, $theme-color-lighten-factor);
+
+$background: #070f1c;
+$foreground: #bcc1c9;

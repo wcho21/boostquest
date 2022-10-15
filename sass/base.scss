@@ -1,0 +1,39 @@
+@use 'variables/colors.scss' as colors;
+
+body, h1, h2, h3, h4, h5, h6, p, menu, ul, ol, nav, pre {
+  margin: 0;
+  padding: 0;
+}
+
+h1, h2, h3, h4, h5, h6, p {
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+header, main, footer, div, menu, ul, ol, article, section, li, nav {
+  box-sizing: border-box;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+a:hover {
+  color: colors.$cyan;
+}
+
+body {
+  background-color: colors.$background;
+}
+
+body, input, code, pre {
+  font-family: 'Nanum Gothic Coding', monospace;
+  color: colors.$foreground;
+  font-weight: 400;
+  line-height: 1.8;
+}
+
+menu, ul, ol, nav {
+  list-style: none;
+}

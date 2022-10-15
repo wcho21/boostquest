@@ -1,27 +1,39 @@
-<%- include('includes/prebody'); %>
-<%- include('includes/header'); %>
-<h1>Day <%= num %></h1>
+<!DOCTYPE html>
+<html>
+  <head>
+    <%- include('includes/head', { pageStylesheet: 'day' }); %>
+  </head>
+  <body>
+    <%- include('includes/header'); %>
 
-<%- include('../challenges/description/' + num + 1); %>
+    <main id="layout-day-page">
+      <%- include('../challenges/description/' + num + 1); %>
 
-<% if (firstProblemSolved) { %>
-  <%- include('../challenges/description/' + num + 2); %>
-<% } %>
+      <% if (!signedIn) { %>
+        <p>더 진행하기 위해, <a href='/signin'>로그인</a>이 필요합니다.</p>
+      <% } else { %>
 
-<% if (secondProblemSolved) { %>
-  <%- include('../challenges/description/' + num + 9); %>
-<% } %>
+        <% if (firstProblemSolved) { %>
+          <%- include('../challenges/description/' + num + 2); %>
+        <% } %>
 
-<% if (secondProblemSolved) { %> 
-  <p>문제를 이미 푸셨지만 입력 파일은 볼 수 있습니다.</p>
-<% } else if (signedIn) { %>
-  <p><a href='/day/<%= num %>/input'>입력 파일</a></p>
-  <form action='/answer/<%= num %>' method='post'>
-    <input type='text' name='answer' placeholder='여기에 답을 입력하세요'></input>
-    <input type='submit' value='제출'></input>
-  </form>
-<% } else { %>
-  <p>로그인을 하고 오세요</p>
-<% } %>
+        <% if (secondProblemSolved) { %>
+          <h2>문제를 해결했습니다!</h2>
 
-<%- include('includes/postbody'); %>
+          <%- include('../challenges/description/' + num + 9); %>
+
+          <p><a href='/'>이전</a>으로 돌아가서 다른 문제를 시도해볼 수 있습니다.</p>
+          <p>문제는 이미 해결했지만 <a href='/day/<%= num %>/input' target='_blank'>입력 파일</a>은 볼 수 있습니다.</p>
+        <% } else if (firstProblemSolved && num === '4') { %>
+          <p><a href='/'>이전</a>으로 돌아가서 다른 문제를 시도해볼 수 있습니다.</p>
+        <% } else { %>
+          <p><a href='/day/<%= num %>/input' target='_blank'>입력 파일</a>을 받아서 문제를 해결해주세요.</p>
+          <form action='/answer/<%= num %>' method='post'>
+            <input type='text' id='answer' name='answer' placeholder='여기에 답을 입력하세요'></input>
+            <input type='submit' id='submit' value='제출'></input>
+          </form>
+        <% } %>
+      <% } %>
+    </main>
+  </body>
+</html>

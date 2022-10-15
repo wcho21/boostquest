@@ -1,0 +1,102 @@
+@use 'variables/fonts.scss' as fonts;
+@use 'variables/colors.scss' as colors;
+@use 'variables/geometry.scss' as geometry;
+
+#layout-day-page {
+  margin: geometry.$main-vertical-margin auto;
+
+  padding: 0 200px;
+
+  width: geometry.$width-main;
+
+  h1 {
+    font-size: 36px;
+
+    font-family: fonts.$font-family-display;
+    letter-spacing: fonts.$letter-spacing-regular-display;
+  }
+
+  h2 {
+    margin: 24px 0;
+
+    font-size: 20px;
+
+    font-weight: 700;
+  }
+
+  h1 + h2 {
+    margin-top: 0;
+  }
+  
+  p {
+    margin: 12px 0;
+
+    text-align: justify;
+
+    font-size: 17px;
+  }
+
+  p code {
+    padding: 0.2ex 0.5ex;
+  }
+
+  p code, pre {
+    background-color: darken(colors.$background, 2.5%);
+    border: 1px solid darken(colors.$foreground, 70%);
+  }
+
+  em {
+    font-style: normal;
+    font-weight: 700;
+    color: colors.$red;
+  }
+
+  pre {
+    display: inline-block;
+
+    line-height: 1.3;
+  }
+
+  pre code {
+    line-height: 1.3;
+  }
+
+  a {
+    color: colors.$cyan;
+
+    &:hover {
+      color: colors.$cyan-bright;
+    }
+  }
+
+  p .emoji {
+    font-family: fonts.$font-family-emoji;
+    font-size: 0.9em;
+  }
+
+  #answer {
+    width: 40%;
+
+    font-size: 16px;
+
+    border: 1px solid darken(colors.$foreground, 60%);
+
+    background-color: darken(colors.$background, 2.5%);
+  }
+
+  #submit {
+    border: none;
+
+    font-size: 16px;
+
+    color: colors.$cyan;
+
+    background-color: transparent;
+
+    cursor: pointer;
+
+    &:hover {
+      color: colors.$cyan-bright;
+    }
+  }
+}

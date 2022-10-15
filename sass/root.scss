@@ -1,0 +1,111 @@
+@use 'variables/fonts.scss' as fonts;
+@use 'variables/colors.scss' as colors;
+@use 'variables/geometry.scss' as geometry;
+
+#layout-root-page {
+  margin: geometry.$main-vertical-margin auto;
+
+  width: geometry.$width-main;
+
+  display: flex;
+
+  gap: 60px;
+}
+
+#layout-root-page-heading {
+  display: none;
+}
+
+#layout-root-page-left {
+  flex: 0 0 720px;
+
+  position: relative;
+
+  #campfire-image {
+    position: absolute;
+
+    bottom: 0;
+    left: 0;
+  }
+}
+
+#layout-root-page-right {
+  flex: 1 0 content;
+
+  width: 320px;
+}
+
+#layout-root-page-days {
+  z-index: 20;
+
+  .day-item {
+    margin: 60px 0;
+
+    display: flex;
+    align-items: center;
+    gap: 24px;
+
+    background-color: rgba(colors.$foreground, 0.1);
+
+    font-family: fonts.$font-family-display;
+    font-size: 20px;
+    letter-spacing: fonts.$letter-spacing-regular-display;
+
+    &:first-child {
+      margin-top: 0;
+    }
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    .closed-day, .open-day {
+      flex: 0 0 content;
+    }
+
+    .closed-day {
+      padding: 16px;
+
+      color: darken(colors.$foreground, 40%);
+    }
+
+    .open-day a {
+      display: block;
+
+      padding: 16px;
+    }
+
+    .status {
+      flex: 1;
+
+      .clear {
+        color: colors.$green;
+      }
+
+      .remaining-time {
+        color: colors.$cyan;
+      }
+    }
+  }
+}
+
+#layout-root-page-woods {
+  position: absolute;
+
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+
+  z-index: 15;
+}
+
+#layout-root-page-mountains {
+  position: absolute;
+  
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  
+  z-index: 10;
+}

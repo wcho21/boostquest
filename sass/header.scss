@@ -1,0 +1,52 @@
+@use 'variables/fonts.scss' as fonts;
+@use 'variables/colors.scss' as colors;
+@use 'variables/geometry.scss' as geometry;
+
+@mixin site-heading-gradient-text {
+  background-image: linear-gradient(90deg, colors.$cyan, rgba(colors.$purple, 0.75), colors.$red);
+  background-size: 100%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+
+  background-color: colors.$foreground; /* fallback */
+}
+
+#layout-header {
+  margin: 0 auto 120px auto;
+
+  width: geometry.$width-main;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  font-family: fonts.$font-family-display;
+}
+
+#layout-header-heading {
+  flex: 0 0 content;
+
+  h1 {
+    font-size: 38px;
+    font-weight: 700;
+    letter-spacing: fonts.$letter-spacing-bold-display;
+
+    @include site-heading-gradient-text;
+  }
+}
+
+#layout-header-menu {
+  flex: 0 0 content;
+
+  display: flex;
+  align-items: center;
+  gap: 48px;
+
+  li {
+    flex: 0 0 content;
+
+    font-size: 20px;
+    letter-spacing: fonts.$letter-spacing-regular-display;
+  }
+}
