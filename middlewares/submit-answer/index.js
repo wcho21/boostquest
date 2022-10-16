@@ -5,13 +5,21 @@ const problems = require('#database/problems');
 const inputCases = require('#database/inputCases');
 const dayjs = require('dayjs');
 
+
+const getBlockEndTime = (lastTriedAtStr) => {
+  const blockTime = 1;
+  const blockTimeUnit = 'minute';
+
+  const lastTriedAt = dayjs(lastTriedAtStr);
+  const blockEndTime = lastTriedAt.add(blockTime, blockTimeUnit);
+  return blockEndTime;
+}
+
 const isBlocked = (lastTriedAtStr) => {
   const currentTime = dayjs();
 
-  const lastTriedAt = dayjs(lastTriedAtStr);
-  const blockedUntil = lastTriedAt.add(2, 'second');
-
-  const blocked = currentTime.isBefore(blockedUntil);
+  const blockEndTime = getBlockEndTime(lastTriedAtStr);
+  const blocked = currentTime.isBefore(blockEndTime);
   return blocked;
 }
 
@@ -37,6 +45,11 @@ module.exports = async (req, res) => {
   const userId = parseInt(res.locals.user.id);
   const userAnswer = req.body.answer;
 
+  res.locals.day = day;
+  res.locals.userAnswer = userAnswer;
+  res.locals.blocked = false;
+  res.locals.correctAnswer = false;
+
   const inputCase = await inputCases.fetch(userId, day);
 
   const firstProblemId = day + '1';
@@ -51,7 +64,8 @@ module.exports = async (req, res) => {
 
     if (status.tried && isBlocked(status.lastTriedAt)) {
       res.locals.blocked = true;
-      res.render('submit');
+      res.locals.blockEndTime = getBlockEndTime(status.lastTriedAt);
+      res.render('answer');
       return;
     }
 
@@ -59,16 +73,13 @@ module.exports = async (req, res) => {
     if (correctAnswer) {
       await problems.updateAsSolved(userId, problemId);
 
-      res.locals.blocked = false;
       res.locals.correctAnswer = true;
-      res.render('submit');
+      res.render('answer');
       return;
     } else {
       await problems.updateLastTriedTime(userId, problemId);
 
-      res.locals.blocked = false;
-      res.locals.correctAnswer = false;
-      res.render('submit');
+      res.render('answer');
       return;
     }
   }
