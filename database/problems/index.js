@@ -43,7 +43,7 @@ exports.updateAsSolved = async (userId, problemId) => {
   if (await rowExists(userId, problemId)) {
     sql = `UPDATE \`${table}\` SET last_tried_at = NOW(), solved = 1 WHERE user_id = ? AND problem_id = ?`;
   } else {
-    sql = `INSERT INTO \`${table}\` (user_id, problem_id) VALUES (?, ?)`;
+    sql = `INSERT INTO \`${table}\` (user_id, problem_id, solved) VALUES (?, ?, 1)`;
   }
 
   await pool.query(sql, [userId, problemId]);
