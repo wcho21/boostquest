@@ -5,16 +5,16 @@ const pool = require('#database/pool');
 const validateChallengeNumber = require('#middlewares/validate-challenge-number');
 const validateAccessTime = require('#middlewares/validate-access-time');
 
-router.get('/:num',
+router.get('/:day',
   validateChallengeNumber,
   validateAccessTime,
   async (req, res) => {
-    const num = req.params.num;
+    const day = req.params.day;
 
     let firstProblemSolved = false;
     let secondProblemSolved = false;
     if (res.locals.signedIn) {
-      const firstProblemId = num + '1';
+      const firstProblemId = day + '1';
       const userId = res.locals.user.id;
       const [rows] = await pool.query('SELECT * FROM problems_v1 WHERE pid = ? AND uid = ?', [firstProblemId, userId]);
       if (rows.length === 1 && rows[0].solved === 1) {
@@ -22,7 +22,7 @@ router.get('/:num',
       }
     }
     if (firstProblemSolved && res.locals.signedIn) {
-      const secondProblemId = num + '2';
+      const secondProblemId = day + '2';
       const userId = res.locals.user.id;
       const [rows] = await pool.query('SELECT * FROM problems_v1 WHERE pid = ? AND uid = ?', [secondProblemId, userId]);
       if (rows.length === 1 && rows[0].solved === 1) {
@@ -33,10 +33,10 @@ router.get('/:num',
     res.locals.firstProblemSolved = firstProblemSolved;
     res.locals.secondProblemSolved = secondProblemSolved;
 
-    res.render('day', { num });
+    res.render('day', { day });
   });
 
-router.get('/:num/input',
+router.get('/:day/input',
   validateChallengeNumber,
   validateAccessTime,
   async (req, res, next) => {
@@ -44,9 +44,9 @@ router.get('/:num/input',
       throw new PageNotFoundError();
     }
 
-    const num = req.params.num;
-    const problemSetNumber = num + '0';
-    const inputCasesIdx = parseInt(num) - 1;
+    const day = req.params.day;
+    const problemSetNumber = day + '0';
+    const inputCasesIdx = parseInt(day) - 1;
     const inputCase = req.session.user.inputCases[inputCasesIdx];
     const buffer = await fs.readFile('./challenges/inputs/' + problemSetNumber + '/' + inputCase + '.txt');
     const input = buffer.toString();

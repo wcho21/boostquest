@@ -4,7 +4,7 @@ const submitAnswer = require('#middlewares/submit-answer');
 const express = require('express');
 const router = express.Router();
 
-router.post('/:num',
+router.post('/:day',
   validateChallengeNumber,
   validateAccessTime,
   submitAnswer);
