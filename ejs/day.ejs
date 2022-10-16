@@ -24,8 +24,6 @@
 
           <p><a href='/'>이전</a>으로 돌아가서 다른 문제를 시도해볼 수 있습니다.</p>
           <p>문제는 이미 해결했지만 <a href='/day/<%= day %>/input' target='_blank'>입력 파일</a>은 볼 수 있습니다.</p>
-        <% } else if (firstProblemSolved && day === '4') { %>
-          <p><a href='/'>이전</a>으로 돌아가서 다른 문제를 시도해볼 수 있습니다.</p>
         <% } else { %>
           <p><a href='/day/<%= day %>/input' target='_blank'>입력 파일</a>을 받아서 문제를 해결해주세요.</p>
           <form action='/answer/<%= day %>' method='post'>
