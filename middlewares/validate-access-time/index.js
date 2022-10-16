@@ -13,7 +13,6 @@ const validateAccessTime = (req, res, next) => {
   const openTime = firstDayOpenTime.add(dayOffset, 'day');
 
   const currentTime = dayjs();
-  console.log(openTime.toISOString(), currentTime.toISOString());
   if (currentTime.isBefore(openTime)) {
     throw new PageNotFoundError();
   }
