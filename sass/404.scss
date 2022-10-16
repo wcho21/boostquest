@@ -1,0 +1,15 @@
+@use 'variables/colors.scss' as colors;
+@use 'variables/geometry.scss' as geometry;
+
+#layout-404-page {
+  margin: geometry.$main-vertical-margin auto;
+
+  padding: 0;
+
+  width: geometry.$width-main;
+
+  h1 {
+    font-size: 32px;
+    font-weight: 700;
+  }
+}
