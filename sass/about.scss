@@ -1,0 +1,33 @@
+@use 'variables/colors.scss' as colors;
+@use 'variables/fonts.scss' as fonts;
+@use 'variables/geometry.scss' as geometry;
+
+#layout-about-page {
+  margin: geometry.$main-vertical-margin auto;
+
+  padding: 0 200px;
+
+  width: geometry.$width-main;
+
+  h1 {
+    font-size: 32px;
+    font-weight: 700;
+  }
+
+  p {
+    margin-top: 3ex;
+  }
+
+  p a {
+    color: colors.$cyan;
+
+    &:hover {
+      color: colors.$cyan-bright;
+    }
+  }
+
+  p .emoji {
+    font-family: fonts.$font-family-emoji;
+    font-size: 0.9em;
+  }
+}
