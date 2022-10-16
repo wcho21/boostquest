@@ -11,29 +11,32 @@ router.get('/:day',
   async (req, res) => {
     const day = req.params.day;
 
-    let firstProblemSolved = false;
-    let secondProblemSolved = false;
-    if (res.locals.signedIn) {
-      const firstProblemId = day + '1';
-      const userId = res.locals.user.id;
-      const [rows] = await pool.query('SELECT * FROM problems_v1 WHERE pid = ? AND uid = ?', [firstProblemId, userId]);
-      if (rows.length === 1 && rows[0].solved === 1) {
-        firstProblemSolved = true;
-      }
+    res.locals.day = day;
+    res.locals.firstProblemSolved = false;
+    res.locals.secondProblemSolved = false;
+
+    if (!res.locals.signedIn) {
+      res.render('day');
+      return;
     }
-    if (firstProblemSolved && res.locals.signedIn) {
+
+    const firstProblemId = day + '1';
+    const userId = res.locals.user.id;
+    const [rows] = await pool.query('SELECT * FROM problems_v1 WHERE pid = ? AND uid = ?', [firstProblemId, userId]);
+    if (rows.length === 1 && rows[0].solved === 1) {
+      res.locals.firstProblemSolved = true;
+    }
+
+    if (res.locals.firstProblemSolved) {
       const secondProblemId = day + '2';
       const userId = res.locals.user.id;
       const [rows] = await pool.query('SELECT * FROM problems_v1 WHERE pid = ? AND uid = ?', [secondProblemId, userId]);
       if (rows.length === 1 && rows[0].solved === 1) {
-        secondProblemSolved = true;
+        res.locals.secondProblemSolved = true;
       }
     }
 
-    res.locals.firstProblemSolved = firstProblemSolved;
-    res.locals.secondProblemSolved = secondProblemSolved;
-
-    res.render('day', { day });
+    res.render('day');
   });
 
 router.get('/:day/input',
