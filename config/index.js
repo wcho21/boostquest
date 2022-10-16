@@ -31,6 +31,7 @@ module.exports = {
     database: e.MYSQL_DATABASE,
     usersTable: e.MYSQL_USERS_TABLE,
     problemsTable: e.MYSQL_PROBLEMS_TABLE,
+    inputCasesTable: e.MYSQL_INPUT_CASES_TABLE,
   },
   site: {
     firstDayOpenTime: e.SITE_FIRST_DAY_OPEN_TIME,

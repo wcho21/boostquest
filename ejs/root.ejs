@@ -11,26 +11,79 @@
 
       <div id="layout-root-page-left">
         <img alt="campfire image" id="campfire-image" src="/images/campfire.gif">
+        <%
+          if (problemsSolved[3]) {
+            %>
+            <img alt="campfire cat" id="campfire-cat-image" src="/images/boostcat.png">
+            <%
+          }
+        %>
       </div>
 
       <div id="layout-root-page-right">
         <ul id="layout-root-page-days">
-          <li class="day-item">
-            <h1 class="open-day"><a href='/day/1'>Day 1</a></h1>
-            <p class="status"><span class="clear">clear</span></p>
-          </li>
-          <li class="day-item">
-            <h1 class="open-day"><a href='/day/2'>Day 2</a></h1>
-            <p class="status"><span class="remaining-time">23:59:59</span></p>
-          </li>
-          <li class="day-item">
-            <h1 class="closed-day">Day 3</h1>
-          </li>
-          <li class="day-item">
-            <h1 class="closed-day">Day 4</h1>
-          </li>
+          <%
+            const dayInterval = 86400000;
+            const currentTime = new Date().getTime();
+            const numOfDays = 4;
+            for (let i = 0; i < numOfDays; ++i) {
+              const day = i+1;
+              const openTime = openTimeForDay[i];
+              %>
+              <li class="day-item">
+                <% if (currentTime < openTime) { %>
+                  <h1 class="closed-day day-<%= day %>">Day <%= day %></h1>
+                <% } else { %>
+                  <h1 class="open-day day-<%= day %>"><a href='/day/<%= day %>'>Day <%= day %></a></h1>
+                <% } %>
+
+                <% if (problemsSolved[i]) { %>
+                  <p class="status"><span class="clear">clear</span></p>
+                <% } else if (currentTime < openTime && openTime - currentTime <= dayInterval) { %>
+                  <p class="status"><span class="remaining-time" data-day-to-open="<%= day %>" data-open-time="<%= openTime %>"></span></p>
+                <% } %>
+              </li>
+              <%
+            }
+          %>
         </ul>
       </div>
     </main>
+    <script type="text/javascript">
+      const remainingTimeElement = document.querySelector('.remaining-time');
+      if (remainingTimeElement) {
+        const openTime = parseInt(remainingTimeElement.dataset.openTime);
+        
+        const timer = setInterval(() => {
+          const currentTime = new Date().getTime();
+          const remainingTime = openTime - currentTime;
+
+          if (remainingTime > 0) {
+            const seconds = Math.floor((remainingTime / 1000) % 60);
+            const minutes = Math.floor((remainingTime / 1000 / 60) % 60);
+            const hours = Math.floor((remainingTime / 1000 / 60 / 60) % 24);
+            const remainingTimeFormatted = [hours, minutes, seconds]
+              .map(n => n.toString().padStart(2, '0'))
+              .reduce((a, b) => a + ':' + b);
+
+            remainingTimeElement.innerText = remainingTimeFormatted;
+          } else {
+            const dayToOpen = remainingTimeElement.dataset.dayToOpen;
+            const dayElement = document.querySelector(`.day-${dayToOpen}`);
+
+            // remove time display
+            remainingTimeElement.innerText = '';
+
+            // open link
+            dayElement.classList.remove('closed-day');
+            dayElement.classList.add('open-day');
+            const contents = dayElement.innerText;
+            dayElement.innerHTML = `<a href='/day/${dayToOpen}'>${contents}</a>`;
+
+            clearInterval(timer);
+          }
+        }, 100);
+      }
+    </script>
   </body>
 </html>

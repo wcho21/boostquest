@@ -3,23 +3,23 @@ const config = require('#config');
 
 const table = config.mysql.problemsTable;
 
-const getProblemRow = async (problemId, userId) => {
-  const sql = `SELECT * FROM \`${table}\` WHERE pid = ? AND uid = ?`;
-  const [rows] = await pool.query(sql, [problemId, userId]);
+const getRow = async (userId, problemId) => {
+  const sql = `SELECT * FROM \`${table}\` WHERE user_id = ? AND problem_id = ?`;
+  const [rows] = await pool.query(sql, [userId, problemId]);
 
   return (rows.length === 0) ? null : rows[0];
 }
 
-const isProblemRowExists = async (problemId, userId) => {
-  const sql = `SELECT EXISTS (SELECT * FROM \`${table}\` WHERE pid = ? AND uid = ?) AS \`exists\``;
-  const [rows] = await pool.query(sql, [problemId, userId]);
+const rowExists = async (userId, problemId) => {
+  const sql = `SELECT EXISTS (SELECT * FROM \`${table}\` WHERE user_id = ? AND problem_id = ?) AS \`exists\``;
+  const [rows] = await pool.query(sql, [userId, problemId]);
   const row = rows[0];
 
   return (row.exists === 1) ? true : false;
 }
 
-exports.getProblemStatus = async (problemId, userId) => {
-  const row = await getProblemRow(problemId, userId);
+exports.getStatus = async (userId, problemId) => {
+  const row = await getRow(userId, problemId);
 
   const status = {
     solved: false,
@@ -38,24 +38,24 @@ exports.getProblemStatus = async (problemId, userId) => {
   return status;
 }
 
-exports.updateProblemAsSolved = async (problemId, userId) => {
+exports.updateAsSolved = async (userId, problemId) => {
   let sql;
-  if (await isProblemRowExists(problemId, userId)) {
-    sql = `UPDATE \`${table}\` SET last_tried_at = NOW(), solved = 1 WHERE pid = ? AND uid = ?`;
+  if (await rowExists(userId, problemId)) {
+    sql = `UPDATE \`${table}\` SET last_tried_at = NOW(), solved = 1 WHERE user_id = ? AND problem_id = ?`;
   } else {
-    sql = `INSERT INTO \`${table}\` (pid, uid, last_tried_at, solved) VALUES (?, ?, NOW(), 1)`;
+    sql = `INSERT INTO \`${table}\` (user_id, problem_id, solved) VALUES (?, ?, 1)`;
   }
 
-  await pool.query(sql, [problemId, userId]);
+  await pool.query(sql, [userId, problemId]);
 }
 
-exports.updateProblemLastTriedAt = async (problemId, userId) => {
+exports.updateLastTriedTime = async (userId, problemId) => {
   let sql;
-  if (await isProblemRowExists(problemId, userId)) {
-    sql = `UPDATE \`${table}\` SET last_tried_at = NOW() WHERE pid = ? AND uid = ?`;
+  if (await rowExists(userId, problemId)) {
+    sql = `UPDATE \`${table}\` SET last_tried_at = NOW() WHERE user_id = ? AND problem_id = ?`;
   } else {
-    sql = `INSERT INTO \`${table}\` (pid, uid, last_tried_at) VALUES (?, ?, NOW())`;
+    sql = `INSERT INTO \`${table}\` (user_id, problem_id) VALUES (?, ?)`;
   }
 
-  await pool.query(sql, [problemId, userId]);
+  await pool.query(sql, [userId, problemId]);
 }

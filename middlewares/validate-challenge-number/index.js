@@ -1,10 +1,10 @@
 const { PageNotFoundError } = require('#middlewares/page-not-found-error-creator');
 
 const validateChallengeNumber = (req, res, next) => {
-  const num = req.params.num;
-  const validNum = /^[1-5]$/.test(num);
+  const day = req.params.day;
+  const validDay = /^[1-4]$/.test(day);
 
-  if (!validNum) {
+  if (!validDay) {
     throw new PageNotFoundError();
   }
 
