@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <%- include('includes/head', { pageStylesheet: 'answer' }); %>
+  </head>
+  <body>
+    <%- include('includes/header'); %>
+
+    <main id="layout-answer-page">
+      <% if (blocked) {
+        const blockEndTimeFormatted = new Date(blockEndTime).toLocaleTimeString('ko-KR');
+        %>
+        <p>너무 빨리 시도하셨네요.
+        지금은 정신을 가다듬는 시간입니다.
+        <%= blockEndTimeFormatted %> 이후부터 시도할 수 있습니다.</p>
+      <% } else if (correctAnswer) { %>
+        <p>정답입니다! 캠프의 평온한 일상에 한 발자국 더 가까워졌습니다.</p>
+      <% } else { %>
+        <p>안타깝지만 정답이 아닌 것 같습니다.
+        잠시 정신을 가다듬고 1분 뒤에 다시 도전해보기로 합니다.
+        당신이 입력했던 답은 <code><%= userAnswer %></code>였습니다.</p>
+      <% } %>
+      <p><a href="/day/<%= day %>">문제로 돌아가기</a></p>
+    </main>
+  </body>
+</html>

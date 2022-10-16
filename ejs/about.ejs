@@ -1,5 +1,31 @@
-<%- include('includes/prebody'); %>
-<%- include('includes/header'); %>
-<h1>About</h1>
-<p>text</p>
-<%- include('includes/postbody'); %>
+<!DOCTYPE html>
+<html>
+  <head>
+    <%- include('includes/head', { pageStylesheet: 'about' }); %>
+  </head>
+  <body>
+    <%- include('includes/header'); %>
+
+    <main id="layout-about-page">
+      <h1>About</h1>
+
+      <p>안녕하세요. 부스트캠프 웹・모바일 7기 캠퍼<span class="emoji">⛺</span> 조원희라고 합니다.
+      이 부스트퀘스트는 <a href="https://adventofcode.com" target="_blank">Advent of Code</a>라는 25일간의 퍼즐 챌린지<span class="emoji">🔥</span>에서 영감을 받아 만든 곳입니다.
+      거기서는 매년 12월 1일부터 25일까지 퍼즐<span class="emoji">🧩</span>이 하나씩 공개되는데요.
+      지난 연도의 퍼즐도 풀어볼 수 있습니다.
+      관심이 있으시다면 한번 도전해보세요.</p>
+      
+      <p>이곳의 소스 코드는 같은 이름의 <a href="https://github.com/wcho21/boostquest" target="_blank">GitHub 저장소</a>에 있습니다.
+      (그렇지만 퍼즐의 답은 재미를 방해하지 않기 위해 숨겨놨습니다. <span class="emoji">👻</span>)
+      여기에는 이번 멤버십 과정으로 배운 Node.js를 사용해보았습니다.
+      더 해보고 싶은 것들이 많았지만... 제가 퍼즐을 풀 때 느꼈던 재미가 여기서도 전해진다면 좋겠네요.</p>
+
+      <p>부스트퀘스트에 대해 문의할 것이 있으시다면, 부스트캠프 슬랙에서 자유롭게 저(J192)에게 메시지<span class="emoji">✉️</span>를 남겨주세요. (제 <a href="https://github.com/wcho21">GitHub</a>, <a href="https://wcho21.github.io">Blog</a>에도 놀러오세요.)</p>
+
+      <p>Credit: 캠프 파이어 이미지는 어떤 <a href="https://www.reddit.com/r/PixelArt/comments/950liz/campfire/?st=JKISB3UR&sh=1c21fc88">Reddit</a>에서 가져온 이미지입니다.
+      거기에 제가 애니메이션을 만들어서 이번에 사용해봤습니다.</p>
+
+      <p>마지막으로, 플레이 해주셔서 감사합니다. <span class="emoji">🙇‍♂️</span></p>
+    </main>
+  </body>
+</html>

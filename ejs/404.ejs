@@ -1,5 +1,14 @@
-<%- include('includes/prebody'); %>
-<%- include('includes/header'); %>
-<h1>길을 잃으셨군요!</h1>
-<p>이곳은 길이 없습니다. 잘못된 곳을 찾아오신 게 아닐까요?</p>
-<%- include('includes/postbody'); %>
+<!DOCTYPE html>
+<html>
+  <head>
+    <%- include('includes/head', { pageStylesheet: '404' }); %>
+  </head>
+  <body>
+    <%- include('includes/header'); %>
+
+    <main id="layout-404-page">
+      <h1>길을 잃으셨군요!</h1>
+      <p>이곳은 길이 없습니다. 잘못된 곳을 찾아오신 게 아닐까요?</p>
+    </main>
+  </body>
+</html>

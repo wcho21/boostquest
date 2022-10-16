@@ -21,7 +21,6 @@ app.use(session);
 app.use(initAuthData);
 
 app.use('/', routers.rootRouter);
-app.use('/leaderboard', routers.leaderboardRouter);
 app.use('/about', routers.aboutRouter); 
 app.use('/signin', routers.signinRouter); 
 app.use('/signout', routers.signoutRouter); 

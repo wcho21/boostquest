@@ -1,0 +1,25 @@
+@use 'variables/colors.scss' as colors;
+@use 'variables/geometry.scss' as geometry;
+
+#layout-answer-page {
+  margin: geometry.$main-vertical-margin auto;
+
+  padding: 0 200px;
+
+  width: geometry.$width-main;
+
+  a {
+    color: colors.$cyan;
+
+    &:hover {
+      color: colors.$cyan-bright;
+    }
+  }
+
+  p code {
+    padding: 0.2ex 0.5ex;
+
+    background-color: darken(colors.$background, 2.5%);
+    border: 1px solid darken(colors.$foreground, 70%);
+  }
+}
