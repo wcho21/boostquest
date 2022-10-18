@@ -5,6 +5,9 @@ dotenv.config();
 const e = process.env;
 
 module.exports = {
+  node: {
+    env: e.NODE_ENV ?? 'development',
+  },
   server: {
     hostname: e.SERVER_HOSTNAME,
     httpPort: e.SERVER_HTTP_PORT,

@@ -1,5 +1,6 @@
 const express = require('express');
 const morgan = require('morgan');
+const config = require('#config');
 const httpsRedirector = require('#middlewares/https-redirector');
 const session = require('#middlewares/session');
 const initAuthData = require('#middlewares/init-auth-data');
@@ -9,7 +10,7 @@ const routers = require('#routers');
 
 const app = express();
 
-app.use(morgan('dev'));
+app.use(morgan(config.node.env === 'production' ? 'combined' : 'dev'));
 app.use(httpsRedirector);
 app.use(express.static('static'));
 app.use(express.urlencoded({ extended: true }));
