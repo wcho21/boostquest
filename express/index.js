@@ -28,6 +28,7 @@ app.use('/signout', routers.signoutRouter);
 app.use('/answer', routers.answerRouter); 
 app.use('/day', routers.dayRouter);
 app.use('/oauth', routers.oauthRouter);
+app.use('/leaderboard', routers.leaderboardRouter);
 
 app.use(pageNotFoundErrorCreator);
 app.use(expressErrorHandler);
