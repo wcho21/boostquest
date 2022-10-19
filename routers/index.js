@@ -5,3 +5,4 @@ exports.signoutRouter = require('./signout');
 exports.answerRouter = require('./answer');
 exports.dayRouter = require('./day');
 exports.oauthRouter = require('./oauth');
+exports.leaderboardRouter = require('./leaderboard');

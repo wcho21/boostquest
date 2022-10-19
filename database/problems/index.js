@@ -2,6 +2,7 @@ const pool = require('#database/pool');
 const config = require('#config');
 
 const table = config.mysql.problemsTable;
+const usersTable = config.mysql.usersTable;
 
 const getRow = async (userId, problemId) => {
   const sql = `SELECT * FROM \`${table}\` WHERE user_id = ? AND problem_id = ?`;
@@ -58,4 +59,16 @@ exports.updateLastTriedTime = async (userId, problemId) => {
   }
 
   await pool.query(sql, [userId, problemId]);
+}
+
+exports.getRankingForProblem = async (problemId, numOfRanking) => {
+  const sql = `SELECT u.name, p.last_tried_at FROM \`${table}\` AS p JOIN \`${usersTable}\` AS u ON p.user_id = u.id WHERE p.problem_id = ? AND p.solved = 1 ORDER BY last_tried_at LIMIT ?`;
+
+  const [rows] = await pool.query(sql, [problemId, numOfRanking]);
+  
+  const namesAndTimes = rows.map(row => ({
+    rankerName: row.name,
+    solvedTimestamp: new Date(row.last_tried_at).getTime(),
+  }));
+  return namesAndTimes;
 }

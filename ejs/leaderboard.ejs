@@ -1,0 +1,37 @@
+<html>
+  <head>
+    <%- include('includes/head', { pageStylesheet: 'leaderboard' }); %>
+  </head>
+  <body>
+    <%- include('includes/header'); %>
+
+    <main id="layout-leaderboard-page">
+      <h1>Leaderboard</h1>
+      <%
+        const numOfDays = 4;
+        for (let i = 0; i < numOfDays; ++i) {
+          const ranking = rankings[i];
+          const day = (i+1);
+          %>
+          <h2 class="ranking-header">Day <%= day %></h2>
+          <%
+            if (ranking.length === 0) {
+              %>
+                <p class="guide-message">아직 해결한 사람이 없습니다.</p>
+              <%
+            }
+          %>
+          <%
+          for (let j = 0; j < ranking.length; ++j) {
+            const entry = ranking[j];
+            const { rankerName, elapsedTime } = entry;
+            const rank = (j+1).toString().padStart(2, ' ').replace(/ /g, '&nbsp;');
+            %>
+              <p class="ranking-entry"><%- rank %>) <a href="https://github.com/<%= rankerName %>" target="_blank"><%= rankerName %></a> (<%= elapsedTime %>)</p>
+            <%
+          }
+        }
+      %>
+    </main>
+  </body>
+</html>
