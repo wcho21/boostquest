@@ -1,6 +1,14 @@
 node_modules/
-challenges/
 pug/includes/challenges
 static/style/
 
 .env
+
+challenges/generators/**/answers
+challenges/generators/**/debug
+challenges/generators/**/inputs
+challenges/generators/**/solve_answers
+challenges/generators/**/solve_debug
+challenges/generators/**/__pycache__
+challenges/answers
+challenges/inputs
